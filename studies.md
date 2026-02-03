@@ -8,6 +8,7 @@
 | Different message error when resetting password | Bruteforce | 
 | None of the above | Bruteforce |
 
+
 # Stage 2 - user to administrator session
 ## Identify the case
 | Case      | Probable exploit |
@@ -18,6 +19,7 @@
 | Different message error when resetting password | Bruteforce | 
 | JSON request when updating email with answer contained "id" but not in the request | IDOR |
 | Able to remove the parameter csrf when updating the email | CSRF |
+
 
 # Stage 3 - command execution as administrator
 ## Identify the case

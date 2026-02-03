@@ -7,3 +7,14 @@
 | Post a comment | HTTP Request Smuggling |
 | Different message error when resetting password | Bruteforce | 
 | None of the above | Bruteforce |
+
+# Stage 2 - user to administrator session
+## Identify the case
+| Case      | Probable exploit |
+| ----------- | ----------- |
+| Advanced search | SQL injection |
+| Session cookie with "isloggedin" | CSRF |
+| Request in Burp proxy when updating email with "timestamp" | CORS |
+| Different message error when resetting password | Bruteforce | 
+| JSON request when updating email with answer contained "id" but not in the request | IDOR |
+| Able to remove the parameter csrf when updating the email | CSRF |

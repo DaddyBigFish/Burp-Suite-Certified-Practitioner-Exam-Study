@@ -1,4 +1,5 @@
 # Stage 1 - anonymous to user session
+## Possible Cases
 | Case      | Probable exploit |
 | ----------- | ----------- |
 | tracking.js | Host header poisoning / Cache poisoning |
@@ -9,6 +10,7 @@
 
 
 # Stage 2 - user to administrator session
+## Possible Cases
 | Case      | Probable exploit |
 | ----------- | ----------- |
 | Advanced search | SQL injection |
@@ -20,6 +22,7 @@
 
 
 # Stage 3 - command execution as administrator
+## Possible Cases
 | Case      | Probable exploit |
 | ----------- | ----------- |
 | Upload XML feature | XXE or XML command injection |

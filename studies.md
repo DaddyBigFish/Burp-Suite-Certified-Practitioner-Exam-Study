@@ -34,7 +34,6 @@ http://localhost:6566/home/carlos/secret
 ## Remember
 
 - Always use **Burp Collaborator** for out-of-band attacks
-- Replace `burp.oastify.com` with your collaborator URL
 - **DNS exfiltration** is most reliable for command injection
 - **SQLMap** with `--level 5 --risk 3` for SQL injection
 - **Burp Scanner** finds most vulnerabilities automatically

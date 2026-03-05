@@ -1,4 +1,4 @@
-## Tips
+## Brief Tips
 
 ### XSS
 ```html

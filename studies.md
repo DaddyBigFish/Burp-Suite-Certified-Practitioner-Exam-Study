@@ -26,7 +26,7 @@
 <stockCheck><productId>&xxe;</productId></stockCheck>
 ```
 
-### SSRF (Exam-Specific)
+### SSRF
 ```
 http://localhost:6566/home/carlos/secret
 ```

